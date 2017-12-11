@@ -19,14 +19,14 @@ namespace RP_Example.ViewModels
 
         private CompositeDisposable disposable { get; } = new CompositeDisposable();
 
-        public CommentViewModel(CommentEntity model, UserModel kote)
+        public CommentViewModel(CommentEntity model, UserModel user)
         {
             Number = new ReactiveProperty<int>(model.Number);
             ID = new ReactiveProperty<string>(model.ID);
             Text = new ReactiveProperty<string>(model.Text);
 
-            Name = kote.ToReactivePropertyAsSynchronized(x => x.Name).AddTo(disposable);
-            Color = kote.ToReactivePropertyAsSynchronized(x => x.Color).AddTo(disposable);
+            Name = user.ToReactivePropertyAsSynchronized(x => x.Name).AddTo(disposable);
+            Color = user.ToReactivePropertyAsSynchronized(x => x.Color).AddTo(disposable);
         }
 
         public void Dispose() => disposable.Dispose();

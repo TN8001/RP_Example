@@ -23,22 +23,22 @@ namespace RP_Example.ViewModels
         public ReactiveCommand DisconnectCommand { get; }
 
         private NicoLiveModel model = new NicoLiveModel();
-        private Dictionary<string, UserModel> UserDict = new Dictionary<string, UserModel>();
+        private Dictionary<string, UserModel> userDict = new Dictionary<string, UserModel>();
         private CompositeDisposable disposable { get; } = new CompositeDisposable();
 
 
         public MainViewModel()
         {
             // ファイルから読む体で
-            UserDict.Add("111", new UserModel("111", "社会人P") { Color = Colors.LightGreen });
-            UserDict.Add("222", new UserModel("222", "八百屋"));
+            userDict.Add("111", new UserModel("111", "社会人P") { Color = Colors.LightGreen });
+            userDict.Add("222", new UserModel("222", "八百屋"));
 
             Comments = model.Comments.ToReadOnlyReactiveCollection(x =>
             {
-                if(!UserDict.TryGetValue(x.ID, out var user))
+                if(!userDict.TryGetValue(x.ID, out var user))
                 {
                     user = new UserModel(x.ID);
-                    UserDict.Add(user.ID, user);
+                    userDict.Add(user.ID, user);
                 }
 
                 return new CommentViewModel(x, user);
