@@ -67,7 +67,7 @@ namespace RP_Example.ViewModels
             ConnectCommand = IsRunning.Select(x => !x).ToAsyncReactiveCommand();
             ConnectCommand.Subscribe(async _ =>
             {
-                await model.ConnectAsync("lv");
+                await model.ConnectAsync("lv1234567");
                 IsRunning.Value = true;
             }).AddTo(disposable); 
 

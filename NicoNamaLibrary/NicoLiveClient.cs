@@ -15,17 +15,15 @@ namespace NicoLiveLibrary
 
         public event NicoLiveEventHandler OnComment;
 
-        private Timer timer;
         private int number;
         private Random random = new Random();
+        private CancellationTokenSource tokenSource;
 
-
-        public NicoLiveClient() => timer = new Timer(Tick);
-
-        public async Task<IEnumerable<CommentEntity>> GetAllCommentAsync()
+        public async Task<IEnumerable<CommentEntity>> ConnectAsync(string liveID)
         {
-            await Task.Delay(1000);
+            if(!liveID.ToLower().StartsWith("lv")) throw new ArgumentException("not liveID.");
 
+            number = 0;
             var list = new List<CommentEntity>();
             for(var i = 0; i < 5; i++)
             {
@@ -33,27 +31,35 @@ namespace NicoLiveLibrary
                 var comment = comments[random.Next(comments.Length)];
                 list.Add(new CommentEntity(++number, id, comment));
             }
+            await Task.Delay(2000); // 過去コメ取得に時間がかかってる体
+
+            tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
+
+            var _ = Task.Run(() => GetComment(token), token);
+
 
             return list;
         }
 
-        public void Connect(string liveID)
-        {
-            if(!liveID.ToLower().StartsWith("lv")) throw new ArgumentException("not liveID.");
-
-            timer.Change(1000, 1000);
-        }
         public void Disconnect()
         {
-            timer.Change(Timeout.Infinite, Timeout.Infinite); // 停止
-            number = 0;
+            tokenSource?.Cancel();
         }
 
-        private void Tick(object state)
+        private void GetComment(CancellationToken token)
         {
-            var id = ids[random.Next(ids.Length)];
-            var comment = comments[random.Next(comments.Length)];
-            OnComment(new CommentEntity(++number, id, comment));
+            while(true)
+            {
+                Task.Delay(random.Next(1000, 2000)).Wait();
+
+                var id = ids[random.Next(ids.Length)];
+                var comment = comments[random.Next(comments.Length)];
+                OnComment(new CommentEntity(++number, id, comment));
+
+                if(token.IsCancellationRequested)
+                    break;
+            }
         }
     }
 }

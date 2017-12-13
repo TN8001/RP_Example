@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace RP_Example.Models
+namespace NoRP_Example.Models
 {
     public class NicoLiveModel
     {
@@ -18,9 +18,11 @@ namespace RP_Example.Models
         {
             Comments.Clear();
 
-            var allComments = await client.ConnectAsync(liveID);
+            var allComments = await client.GetAllCommentAsync();
             foreach(var comment in allComments)
                 Comments.Add(comment);
+
+            client.Connect(liveID);
         }
         public void Disconnect() => client.Disconnect();
     }

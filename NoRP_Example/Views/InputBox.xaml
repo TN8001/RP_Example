@@ -1,0 +1,29 @@
+﻿<Window
+  x:Class="NoRP_Example.InputBox"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Title="入力"
+  ContentRendered="Window_ContentRendered"
+  SizeToContent="WidthAndHeight"
+  WindowStartupLocation="CenterScreen">
+  <StackPanel>
+    <TextBlock Margin="5" Text="名前を入力してください。" />
+    <TextBox
+      x:Name="TextBox"
+      MinWidth="250"
+      Margin="5" />
+    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+      <Button
+        MinWidth="80"
+        Margin="5"
+        Click="Button_Click"
+        Content="OK"
+        IsDefault="True" />
+      <Button
+        MinWidth="80"
+        Margin="5"
+        Content="Cancel"
+        IsCancel="True" />
+    </StackPanel>
+  </StackPanel>
+</Window>
