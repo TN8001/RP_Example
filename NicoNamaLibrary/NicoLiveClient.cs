@@ -25,20 +25,23 @@ namespace NicoLiveLibrary
 
             number = 0;
             var list = new List<CommentEntity>();
-            for(var i = 0; i < 5; i++)
+
+            await Task.Run(() => // 過去コメ取得に時間がかかってる体
             {
-                var id = ids[random.Next(ids.Length)];
-                var comment = comments[random.Next(comments.Length)];
-                list.Add(new CommentEntity(++number, id, comment));
-            }
-            await Task.Delay(2000); // 過去コメ取得に時間がかかってる体
+                for(var i = 0; i < 5; i++)
+                {
+                    Task.Delay(500).Wait();
+                    var id = ids[random.Next(ids.Length)];
+                    var comment = comments[random.Next(comments.Length)];
+                    list.Add(new CommentEntity(++number, id, comment));
+                }
+            });
 
             tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
 
             // 「_」ワーニング消し 特に意味はない 
             var _ = Task.Run(() => GetCommentLoop(token), token);
-
 
             return list;
         }
@@ -54,6 +57,8 @@ namespace NicoLiveLibrary
 
                 var id = ids[random.Next(ids.Length)];
                 var comment = comments[random.Next(comments.Length)];
+
+                if(token.IsCancellationRequested) break;
                 OnComment(new CommentEntity(++number, id, comment));
             }
         }
