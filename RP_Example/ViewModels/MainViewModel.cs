@@ -17,6 +17,7 @@ namespace RP_Example.ViewModels
 
         public ReactiveProperty<bool> IsRunning { get; } = new ReactiveProperty<bool>(false);
 
+
         public ReactiveCommand NameChangeCommand { get; } = new ReactiveCommand();
         public ReactiveCommand ColorChangeCommand { get; } = new ReactiveCommand();
         public AsyncReactiveCommand ConnectCommand { get; }
