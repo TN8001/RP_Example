@@ -36,29 +36,25 @@ namespace NicoLiveLibrary
             tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
 
-            var _ = Task.Run(() => GetComment(token), token);
+            // 「_」ワーニング消し 特に意味はない 
+            var _ = Task.Run(() => GetCommentLoop(token), token);
 
 
             return list;
         }
+        public void Disconnect() => tokenSource?.Cancel();
 
-        public void Disconnect()
-        {
-            tokenSource?.Cancel();
-        }
-
-        private void GetComment(CancellationToken token)
+        private void GetCommentLoop(CancellationToken token)
         {
             while(true)
             {
-                Task.Delay(random.Next(1000, 2000)).Wait();
+                if(token.IsCancellationRequested) break;
+
+                Task.Delay(random.Next(1000, 2000)).Wait(); // 適当にコメント間隔
 
                 var id = ids[random.Next(ids.Length)];
                 var comment = comments[random.Next(comments.Length)];
                 OnComment(new CommentEntity(++number, id, comment));
-
-                if(token.IsCancellationRequested)
-                    break;
             }
         }
     }
