@@ -17,11 +17,11 @@ namespace RP_Example.ViewModels
 
         public ReactiveProperty<bool> IsRunning { get; } = new ReactiveProperty<bool>(false);
 
-
         public ReactiveCommand NameChangeCommand { get; } = new ReactiveCommand();
         public ReactiveCommand ColorChangeCommand { get; } = new ReactiveCommand();
         public AsyncReactiveCommand ConnectCommand { get; }
         public ReactiveCommand DisconnectCommand { get; }
+
 
         private NicoLiveModel model = new NicoLiveModel();
         private Dictionary<string, UserModel> userDict = new Dictionary<string, UserModel>();
@@ -34,21 +34,22 @@ namespace RP_Example.ViewModels
             userDict.Add("111", new UserModel("111", "社会人P") { Color = Colors.LightGreen });
             userDict.Add("222", new UserModel("222", "八百屋"));
 
-            Comments = model.Comments.ToReadOnlyReactiveCollection(x =>
+            Comments = model.Comments.ToReadOnlyReactiveCollection(comment =>
             {
-                if(!userDict.TryGetValue(x.ID, out var user))
+                if(!userDict.TryGetValue(comment.ID, out var user))
                 {
-                    user = new UserModel(x.ID);
+                    user = new UserModel(comment.ID);
                     userDict.Add(user.ID, user);
                 }
 
-                return new CommentViewModel(x, user);
+                return new CommentViewModel(comment, user);
             }).AddTo(disposable);
 
             #region Command
-            NameChangeCommand.Subscribe(menuItem =>
+            NameChangeCommand.Subscribe(obj =>
             {
-                var comment = ((MenuItem)menuItem).DataContext as CommentViewModel;
+                var menuItem = obj as MenuItem;
+                var comment = menuItem.DataContext as CommentViewModel;
                 var ib = new InputBox
                 {
                     DataContext = comment,
@@ -59,10 +60,11 @@ namespace RP_Example.ViewModels
                     comment.Name.Value = ib.Text;
             });
 
-            ColorChangeCommand.Subscribe(menuItem =>
+            ColorChangeCommand.Subscribe(obj =>
             {
-                var comment = ((MenuItem)menuItem).DataContext as CommentViewModel;
-                comment.Color.Value = (Color)((MenuItem)menuItem).Tag;
+                var menuItem = obj as MenuItem;
+                var comment = menuItem.DataContext as CommentViewModel;
+                comment.Color.Value = (Color)menuItem.Tag;
             });
 
             ConnectCommand = IsRunning.Select(x => !x).ToAsyncReactiveCommand();
@@ -70,7 +72,7 @@ namespace RP_Example.ViewModels
             {
                 await model.ConnectAsync("lv1234567");
                 IsRunning.Value = true;
-            }).AddTo(disposable); 
+            }).AddTo(disposable);
 
             DisconnectCommand = IsRunning.ToReactiveCommand();
             DisconnectCommand.Subscribe(_ =>

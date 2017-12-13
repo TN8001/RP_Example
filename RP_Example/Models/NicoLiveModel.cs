@@ -13,7 +13,6 @@ namespace RP_Example.Models
 
         public NicoLiveModel() => client.OnComment += (comment) => Comments.Add(comment);
 
-
         public async Task ConnectAsync(string liveID)
         {
             Comments.Clear();

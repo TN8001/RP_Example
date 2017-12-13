@@ -30,6 +30,7 @@ namespace RP_Example
                 }
             }
 
+            // 冗長だが実際はどちらかしか使わない
             if(FindName("ListView") is ListView listView)
             {
                 if(listView.ItemsSource is INotifyCollectionChanged nc)
@@ -60,6 +61,7 @@ namespace RP_Example
             return box.Contains(top);
         }
         // ListViewは動作が怪しいが未調査
+        // これも冗長だが実際はどちらかしか使わない
         private bool IsListViewScrollEnd(ListView listView)
         {
             var index = listView.Items.Count - 2;

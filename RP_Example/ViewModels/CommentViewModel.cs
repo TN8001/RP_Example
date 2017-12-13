@@ -10,14 +10,15 @@ namespace RP_Example.ViewModels
 {
     public class CommentViewModel : IDisposable
     {
-        public ReactiveProperty<int> Number { get; set; }
-        public ReactiveProperty<string> ID { get; set; }
-        public ReactiveProperty<string> Text { get; set; }
+        public ReactiveProperty<int> Number { get; }
+        public ReactiveProperty<string> ID { get; }
+        public ReactiveProperty<string> Text { get; }
 
-        public ReactiveProperty<string> Name { get; set; }
-        public ReactiveProperty<Color?> Color { get; set; }
+        public ReactiveProperty<string> Name { get; }
+        public ReactiveProperty<Color?> Color { get; }
 
         private CompositeDisposable disposable { get; } = new CompositeDisposable();
+
 
         public CommentViewModel(CommentEntity model, UserModel user)
         {
